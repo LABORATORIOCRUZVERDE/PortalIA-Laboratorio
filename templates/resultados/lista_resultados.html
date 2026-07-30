@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+
+<div class="card shadow">
+
+    <div class="card-header bg-success text-white">
+
+        <h3 class="mb-0">Mis Resultados de Laboratorio</h3>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="alert alert-light border">
+
+            <h5 class="mb-3">Datos del paciente</h5>
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <strong>Nombre:</strong><br>
+                    {{ paciente.nombres }} {{ paciente.apellidos }}
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Documento:</strong><br>
+                    {{ paciente.documento }}
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Celular:</strong><br>
+                    {{ paciente.celular }}
+                </div>
+
+            </div>
+
+            <hr>
+
+            <strong>Correo:</strong>
+            {{ paciente.correo }}
+
+        </div>
+
+        <table class="table table-hover align-middle">
+
+            <thead class="table-success">
+
+                <tr>
+                    <th>Examen</th>
+                    <th>Fecha</th>
+                    <th class="text-center">Ver</th>
+                    <th class="text-center">Descargar</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for resultado in resultados %}
+
+                <tr>
+
+                    <td><strong>{{ resultado.tipo_examen }}</strong></td>
+
+                    <td>{{ resultado.fecha_resultado }}</td>
+
+                    <td class="text-center">
+
+                        <a href="{{ resultado.archivo_pdf.url }}"
+                           target="_blank"
+                           class="btn btn-primary btn-sm">
+
+                            Ver PDF
+
+                        </a>
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <a href="{{ resultado.archivo_pdf.url }}"
+                           download
+                           class="btn btn-success btn-sm">
+
+                            Descargar
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+            {% empty %}
+
+                <tr>
+
+                    <td colspan="4" class="text-center">
+
+                        No existen resultados disponibles.
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

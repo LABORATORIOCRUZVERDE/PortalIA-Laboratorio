@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+
+<div class="row justify-content-center">
+
+    <div class="col-lg-8">
+
+        <div class="card shadow">
+
+            <div class="card-header bg-success text-white">
+
+                <h3>Registro de Pacientes</h3>
+
+            </div>
+
+            <div class="card-body">
+
+                <form method="post">
+
+                    {% csrf_token %}
+
+                    {{ formulario.as_p }}
+
+                    <button
+                        type="submit"
+                        class="btn btn-success w-100">
+
+                        Guardar Paciente
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

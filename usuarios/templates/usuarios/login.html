@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+
+<div class="row justify-content-center">
+
+    <div class="col-lg-5 col-md-7">
+
+        <div class="card shadow-lg border-0">
+
+            <div class="card-header bg-success text-white text-center">
+
+                <h3>Portal IA</h3>
+                <p class="mb-0">Laboratorio Clínico Cruz Verde</p>
+
+            </div>
+
+            <div class="card-body p-4">
+
+                {% if error %}
+                <div class="alert alert-danger">
+                    {{ error }}
+                </div>
+                {% endif %}
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Documento
+                        </label>
+
+                        <input
+                            type="text"
+                            name="usuario"
+                            class="form-control"
+                            placeholder="Número de documento"
+                            required>
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <label class="form-label">
+                            Contraseña
+                        </label>
+
+                        <input
+                            type="password"
+                            name="password"
+                            class="form-control"
+                            placeholder="Ingrese su contraseña"
+                            required>
+
+                    </div>
+
+                    <div class="d-grid">
+
+                        <button
+                            type="submit"
+                            class="btn btn-success btn-lg">
+
+                            Ingresar
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <hr>
+
+                <div class="text-center">
+
+                    <small class="text-muted">
+
+                        Si aún no tiene una cuenta,
+                        solicite su registro en el laboratorio.
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
