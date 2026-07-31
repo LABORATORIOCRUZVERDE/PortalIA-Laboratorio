@@ -16,6 +16,12 @@ class Resultado(models.Model):
 
     archivo_pdf = models.FileField(upload_to="resultados/")
 
+    nombre_archivo = models.CharField(
+    max_length=100,
+    blank=True,
+    default=""
+)
+
     fecha_carga = models.DateTimeField(auto_now_add=True)
 
     disponible = models.BooleanField(default=True)

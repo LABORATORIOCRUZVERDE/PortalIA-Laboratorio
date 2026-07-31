@@ -12,7 +12,8 @@ django.setup()
 
 from pacientes.models import Paciente
 from resultados.models import Resultado
-
+from django.core.files import File
+from datetime import datetime
 from lector_pdf import leer_pdf, extraer_datos
 
 CARPETA_PDF = r"C:\PortalIA\Resultados"
@@ -23,42 +24,61 @@ print("\nIMPORTANDO RESULTADOS\n")
 
 for archivo in archivos:
 
-    if archivo.lower().endswith(".pdf"):
+    if not archivo.lower().endswith(".pdf"):
+        continue
 
-        ruta = os.path.join(CARPETA_PDF, archivo)
+    # Verificar si ya fue importado
+    if Resultado.objects.filter(nombre_archivo=archivo).exists():
+        print(f"{archivo} ya fue importado.")
+        continue
 
-        texto = leer_pdf(ruta)
+    ruta = os.path.join(CARPETA_PDF, archivo)
 
-        datos = extraer_datos(texto)
+    texto = leer_pdf(ruta)
 
-        documento = datos.get("documento")
+    datos = extraer_datos(texto)
 
-        try:
+    documento = datos.get("documento")
 
-            paciente = Paciente.objects.get(documento=documento)
+    try:
 
-            print(f"Paciente encontrado: {paciente.nombres} {paciente.apellidos}")
-            if Resultado.objects.filter(
-    paciente=paciente,
-    fecha_resultado=datos["fecha"]
-).exists():
+        paciente = Paciente.objects.get(documento=documento)
 
-    print("Este resultado ya fue importado.")
+        print(f"Paciente encontrado: {paciente.nombres} {paciente.apellidos}")
 
-    continue
+    except Paciente.DoesNotExist:
 
-        except Paciente.DoesNotExist:
+        print(f"No existe un paciente con documento {documento}")
 
-            print(f"No existe un paciente con documento {documento}")
+        continue
 
-            continue
+    print("------------------------------------")
 
-        print("------------------------------------")
+    print("Archivo:", archivo)
 
-        print("Archivo:", archivo)
+    for clave, valor in datos.items():
+        print(f"{clave}: {valor}")
 
-        for clave, valor in datos.items():
+    print("------------------------------------")
+    # Crear el registro del resultado
 
-            print(f"{clave}: {valor}")
+with open(ruta, "rb") as pdf:
 
-        print("------------------------------------")
+    resultado = Resultado.objects.create(
+
+        paciente=paciente,
+
+        tipo_examen=datos["tipo_examen"],
+
+        fecha_resultado=datetime.strptime(
+            datos["fecha"],
+            "%d/%m/%Y"
+        ).date(),
+
+        nombre_archivo=archivo,
+
+        archivo_pdf=File(pdf, name=archivo)
+
+    )
+
+print("Resultado registrado correctamente.")
