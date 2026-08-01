@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from django.contrib import messages
 from .forms import PacienteForm
 
 
@@ -11,18 +12,37 @@ def registro_paciente(request):
 
         if formulario.is_valid():
 
-            paciente = formulario.save(commit=False)
+    paciente = formulario.save(commit=False)
 
-            usuario = User.objects.create_user(
-                username=paciente.documento,
-                password=paciente.documento
-            )
+    documento = paciente.documento
 
-            paciente.usuario = usuario
+    if User.objects.filter(username=documento).exists():
 
-            paciente.save()
+        messages.error(
+            request,
+            "Ya existe un usuario registrado con este documento."
+        )
 
-            return redirect("registro_paciente")
+    else:
+
+        usuario = User.objects.create_user(
+            username=documento,
+            password=formulario.cleaned_data["password"],
+            first_name=paciente.nombres,
+            last_name=paciente.apellidos,
+            email=paciente.correo,
+        )
+
+        paciente.usuario = usuario
+
+        paciente.save()
+
+        messages.success(
+            request,
+            "Registro exitoso. Ya puedes iniciar sesión."
+        )
+
+        return redirect("login")
 
     else:
 
